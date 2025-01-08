@@ -1,8 +1,9 @@
-import React from 'react'
-
+import React from 'react' 
+  import Header from './Header'
 const Browes = () => {
   return (
-    <div>Browes</div>
+    <div><Header/>
+    </div>
   )
 }
 
