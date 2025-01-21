@@ -2,71 +2,85 @@ import React, { useRef, useState } from 'react';
 import Header from './Header';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from '../utils/firebase';
-import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { addUser } from '../utils/userSlice';
+import { checkvalidateData } from '../utils/validate';
+import { BG_URL } from '../utils/constant';
 
 const Login = () => {
-  const navigate = useNavigate();
+
   const email = useRef(null);
   const password = useRef(null);
   const firstName = useRef(null);
   const dispatch=useDispatch();
   const [isSignInForm, setIsSignInForm] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
+  
+  const handleButtonClick = () => {
+    const message = checkvalidateData(email.current.value, password.current.value);
+    setErrorMessage(message);
+    if (message) return;
 
-  const toggleSignInForm = () => {
-    setIsSignInForm(!isSignInForm);
-  };
-  const handleButton= ()=>{
     if (!isSignInForm) {
-       createUserWithEmailAndPassword(auth, email.current.value, password.current.value,firstName.current.value)
+      // Sign Up Logic
+      createUserWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
         .then((userCredential) => {
           const user = userCredential.user;
-          // Update the user's profile with display name and photo URL
           updateProfile(user, {
-            displayName: firstName.current.value, // Use the firstName input value
+            displayName: firstName.current.value,
           })
-          .then(() => {
-            const {uid,email,displayName} = auth.currentUser;
-            dispatch({uid:uid,email:email,displayName:displayName})
-            // Profile updated successfully
-            navigate("/browse");
-          })
-          .catch((error) => {
-            // Handle profile update errors
-            setErrorMessage(`Profile update error: ${error.message}`);
-          });
+            .then(() => {
+              const { uid, email, displayName, photoURL } = auth.currentUser;
+              dispatch(
+                addUser({
+                  uid: uid,
+                  email: email,
+                  displayName: displayName,
+                  photoURL: photoURL,
+                })
+              );
+            })
+            .catch((error) => {
+              setErrorMessage(error.message);
+            });
         })
         .catch((error) => {
-          // Handle sign-up errors
           const errorCode = error.code;
           const errorMessage = error.message;
-          setErrorMessage(`${errorCode} - ${errorMessage}`);
+          setErrorMessage(errorCode + "-" + errorMessage);
+        });
+    } else {
+      // Sign In Logic
+      signInWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setErrorMessage(errorCode + "-" + errorMessage);
         });
     }
-    
-  
-  else{
-  signInWithEmailAndPassword(auth, email.current.value, password.current.value)
-  .then((userCredential) => {
-    // Signed in 
-    const user = userCredential.user;
-    navigate("/browse")
-  })
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    setErrorMessage(errorCode + "-" + errorMessage)
-  });
-  }
-}
+  };
+const toggleSignInForm = () => {
+  setIsSignInForm(!isSignInForm);
+};
 
   return (
     <div>
       <Header />
       <div className="absolute ">
         <img className=""
-          src="https://assets.nflxext.com/ffe/siteui/vlv3/2f5a878d-bbce-451b-836a-398227a34fbf/web/IN-en-20241230-TRIFECTA-perspective_5ab944a5-1a71-4f6d-b341-8699d0491edd_small.jpg"
+          src={BG_URL}
           alt="Netflix promotional banner"
         />
       </div>
@@ -106,7 +120,7 @@ const Login = () => {
         <button
           type="button"
           className="bg-red-600 rounded-xl w-full p-4 my-6"
-          onClick={handleButton}
+          onClick={handleButtonClick}
         >
           {isSignInForm ? "Sign In" : "Sign Up"}
         </button>
