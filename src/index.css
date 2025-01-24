@@ -1,3 +1,23 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+    /* Hide scrollbar but keep scrolling functionality */
+    
+    /* For Chrome, Safari, and Opera */
+    .no-scrollbar::-webkit-scrollbar {
+        width: 0px;
+        height: 0px;
+    }
+
+    /* For Firefox */
+    .no-scrollbar {
+        scrollbar-width: none;
+    }
+
+    /* For Edge */
+    .no-scrollbar::-ms-scrollbar {
+        display: none;
+    }
+}
