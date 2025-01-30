@@ -1,4 +1,3 @@
-import { wait } from "@testing-library/user-event/dist/utils";
 import { API_OPTIONS } from "../utils/constant";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
