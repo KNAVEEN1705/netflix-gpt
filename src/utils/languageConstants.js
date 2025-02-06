@@ -1,4 +1,4 @@
-const lang={
+export const lang={
 
     english:{
         search:"Search",
@@ -19,4 +19,3 @@ const lang={
 
 }
 
-export default lang;

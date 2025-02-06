@@ -17,6 +17,7 @@ const useMovieTrailer = (movieid) => {
         API_OPTIONS
       );
       const json = await data.json();
+      console.log(json)
   
       // Check if json.results exists and is an array
       if (Array.isArray(json.results)) {
