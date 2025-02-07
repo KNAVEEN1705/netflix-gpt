@@ -103,22 +103,6 @@ NetflixGPT is a feature-rich movie browsing and recommendation application that 
 - **Responsive Design:** Tailwind CSS for a stunning and responsive UI.
 - **Environment Configuration:** `.env` file for secure key management.
 
-## Directory Structure
-```
-NetflixGPT/
-├── public/
-├── src/
-│   ├── components/
-│   ├── hooks/
-│   ├── pages/
-│   ├── redux/
-│   ├── App.js
-│   └── index.js
-├── .env
-├── .gitignore
-├── package.json
-└── README.md
-```
 
 ## Deployment
 The application is deployed to [Firebase Hosting](https://firebase.google.com/products/hosting).
